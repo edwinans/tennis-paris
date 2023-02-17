@@ -3,7 +3,8 @@ import requests
 from bs4 import BeautifulSoup
 from sys import argv
 
-def get_hours(name):
+
+def get_hours(name, config):
   headers = {
       'authority': 'tennis.paris.fr',
       'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
@@ -110,19 +111,23 @@ def search_available(config):
     props = f['properties']
     available = props['available']
     general = props['general']
-    if available:
+    arrond = general['_arrondissement']
+    if available and (arrond in config['arronds']):
       name = general['_nomSrtm']
-      res.append(f"Tennis {name}, arrondissement:{general['_arrondissement']}, {get_hours(name)}")
+      res.append(
+          f"Tennis {name}, arrondissement:{arrond}, {get_hours(name, config)}".replace('\'', ''))
   return res
   # print(json.dumps(data, indent=2, ensure_ascii=False))
 
 
 if __name__ == '__main__':
-  date = '18/02/2023'
+  date = argv[1] if len(argv) > 1 else '18/02/2023'
+  print(date)
   config = {
-      'date': '18/02/2023',
+      'date': date,
       'hours': '10-20',
-      'couvert': True
+      'couvert': True,
+      'arronds': range(1, 21)
   }
   res = search_available(config)
   print(res)
