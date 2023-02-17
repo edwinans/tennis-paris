@@ -3,7 +3,8 @@
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, Updater
 from main import search_available
-from auth import token
+import auth
+import os
 
 
 async def hello(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -33,6 +34,9 @@ async def search(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 def main():
+  token = auth.token
+  if os.getenv('BOT_TOKEN'):
+    token = os.getenv('BOT_TOKEN')
 
   app = ApplicationBuilder().token(token).build()
 
