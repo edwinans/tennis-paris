@@ -2,6 +2,7 @@
 import requests
 from bs4 import BeautifulSoup
 from sys import argv
+from datetime import date
 
 
 def get_hours(name, config):
@@ -97,6 +98,8 @@ def search_available(config):
       'selInOut': {'V' if config['couvert'] else 'F'}
   }
 
+  print(config['date'])
+
   response = requests.post(
       'https://tennis.paris.fr/tennis/jsp/site/Portal.jsp',
       params=params,
@@ -115,7 +118,7 @@ def search_available(config):
     if available and (arrond in config['arronds']):
       name = general['_nomSrtm']
       res.append(
-          f"Tennis {name}, arrondissement:{arrond}, {get_hours(name, config)}".replace('\'', ''))
+          f"Tennis {name}, arrondissement:{arrond}, {config['date']}, {get_hours(name, config)}".replace('\'', ''))
   return res
   # print(json.dumps(data, indent=2, ensure_ascii=False))
 
